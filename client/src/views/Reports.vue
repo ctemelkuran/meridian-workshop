@@ -125,7 +125,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { watch } from 'vue'
+import { api } from '../api'
+import { useFilters } from '../composables/useFilters'
 
 export default {
   name: 'Reports',
@@ -141,9 +143,21 @@ export default {
       bestQuarter: ''
     }
   },
+  created() {
+    // Use shared filters so Reports reacts the same way Orders/Inventory do
+    const { getCurrentFilters, selectedPeriod, selectedLocation, selectedCategory, selectedStatus } = useFilters()
+    this.getCurrentFilters = getCurrentFilters
+    this.stopFilterWatch = watch(
+      [selectedPeriod, selectedLocation, selectedCategory, selectedStatus],
+      () => this.loadData()
+    )
+  },
   mounted() {
     console.log('Reports component mounted')
     this.loadData()
+  },
+  beforeUnmount() {
+    if (this.stopFilterWatch) this.stopFilterWatch()
   },
   methods: {
     async loadData() {
@@ -151,16 +165,16 @@ export default {
       try {
         this.loading = true
 
+        const filters = this.getCurrentFilters()
+
         // Fetch quarterly data
         console.log('Fetching quarterly data...')
-        const quarterlyResponse = await axios.get('http://localhost:8001/api/reports/quarterly')
-        this.quarterlyData = quarterlyResponse.data
+        this.quarterlyData = await api.getQuarterlyReports(filters)
         console.log('Quarterly data:', this.quarterlyData)
 
         // Fetch monthly data
         console.log('Fetching monthly data...')
-        const monthlyResponse = await axios.get('http://localhost:8001/api/reports/monthly-trends')
-        this.monthlyData = monthlyResponse.data
+        this.monthlyData = await api.getMonthlyTrends(filters)
         console.log('Monthly data:', this.monthlyData)
 
         // Calculate summary stats
