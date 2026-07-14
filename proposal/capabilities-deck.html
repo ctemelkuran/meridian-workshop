@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meridian Components — Inventory Dashboard Modernization</title>
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --accent: #2563eb;
+    --bg: #f8fafc;
+    --green: #16a34a;
+    --yellow: #ca8a04;
+    --red: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .deck {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 120px;
+  }
+  .slide {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 56px 64px;
+    margin-bottom: 32px;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  }
+  .slide .num {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .kicker {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 40px;
+    margin: 0 0 8px;
+    line-height: 1.15;
+  }
+  h2 {
+    font-size: 30px;
+    margin: 0 0 24px;
+    line-height: 1.2;
+  }
+  .sub {
+    font-size: 18px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .title-slide {
+    justify-content: center;
+    text-align: left;
+    background: var(--ink);
+    color: white;
+    border: none;
+  }
+  .title-slide .kicker { color: #93c5fd; }
+  .title-slide .sub { color: #cbd5e1; }
+  .title-slide .meta {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #94a3b8;
+  }
+  ul { padding-left: 22px; margin: 0; }
+  li { margin-bottom: 12px; font-size: 17px; line-height: 1.5; }
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: var(--bg);
+  }
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+  }
+  .card p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .badge.required { background: #dbeafe; color: #1e40af; }
+  .badge.desired { background: #f1f5f9; color: var(--muted); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .timeline-row .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+  .timeline-row .weeks {
+    font-size: 13px; color: var(--muted); width: 70px; flex-shrink: 0;
+  }
+  .timeline-row .label { font-size: 16px; }
+  .pricebox {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .pricebox:last-child { border-bottom: none; }
+  .pricebox .amt { font-size: 22px; font-weight: 700; }
+  .closing {
+    background: var(--ink);
+    color: white;
+    border: none;
+    text-align: center;
+    align-items: center;
+  }
+  .closing h1 { font-size: 36px; }
+  .closing .sub { color: #cbd5e1; }
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: -8px;
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1: Title -->
+  <div class="slide title-slide">
+    <div class="kicker">Proposal in Response to RFP MC-2026-0417</div>
+    <h1>Modernizing Meridian's<br>Inventory Dashboard</h1>
+    <p class="sub">A focused engagement to stabilize, extend, and future-proof the operations team's daily tool.</p>
+    <div class="meta">Prepared for Meridian Components, Inc. · J. Okafor, Director of Procurement</div>
+    <div class="num">1 / 12</div>
+  </div>
+
+  <!-- 2: The problem -->
+  <div class="slide">
+    <div class="kicker">The Problem</div>
+    <h2>A capable system that can't safely move forward</h2>
+    <ul>
+      <li>The Reports module has known, unresolved defects from the previous build.</li>
+      <li>Operations has no way to turn stock and demand data into a purchasing decision.</li>
+      <li>Zero automated test coverage means IT won't approve further changes.</li>
+      <li>The dashboard is stuck: functional today, unable to safely evolve.</li>
+    </ul>
+    <div class="num">2 / 12</div>
+  </div>
+
+  <!-- 3: What we found -->
+  <div class="slide">
+    <div class="kicker">What We Found</div>
+    <h2>The gaps are specific, not vague</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Reports.vue</h3>
+        <p>The one view still on the old code pattern, bypassing the shared data layer, with leftover debug logging and no translation support.</p>
+      </div>
+      <div class="card">
+        <h3>Restocking</h3>
+        <p>Stock and demand data already exist in the system. A model for purchase orders was even started, but never connected.</p>
+      </div>
+      <div class="card">
+        <h3>Testing</h3>
+        <p>No automated coverage exists anywhere in the application today.</p>
+      </div>
+      <div class="card">
+        <h3>Architecture</h3>
+        <p>Simple, well-understood stack. A few configuration items worth hardening as we go, not rebuilding.</p>
+      </div>
+    </div>
+    <div class="num">3 / 12</div>
+  </div>
+
+  <!-- 4: Scope overview -->
+  <div class="slide">
+    <div class="kicker">Scope</div>
+    <h2>Required and desired scope, per the RFP</h2>
+    <table>
+      <tr><th>Item</th><th>Description</th><th></th></tr>
+      <tr><td>R1</td><td>Reports module remediation</td><td><span class="badge required">Required</span></td></tr>
+      <tr><td>R2</td><td>Restocking recommendations</td><td><span class="badge required">Required</span></td></tr>
+      <tr><td>R3</td><td>Automated browser testing</td><td><span class="badge required">Required</span></td></tr>
+      <tr><td>R4</td><td>Architecture documentation</td><td><span class="badge required">Required</span></td></tr>
+      <tr><td>D1</td><td>UI modernization</td><td><span class="badge desired">Desired</span></td></tr>
+      <tr><td>D2</td><td>Internationalization</td><td><span class="badge desired">Desired</span></td></tr>
+      <tr><td>D3</td><td>Dark mode</td><td><span class="badge desired">Desired</span></td></tr>
+    </table>
+    <div class="num">4 / 12</div>
+  </div>
+
+  <!-- 5: Our approach -->
+  <div class="slide">
+    <div class="kicker">Our Approach</div>
+    <h2>Sequenced by risk, not just by priority</h2>
+    <ul>
+      <li><strong>Review first.</strong> Understand the system before changing it.</li>
+      <li><strong>Fix what's visible.</strong> Reports remediation rebuilds trust early.</li>
+      <li><strong>Build what matters most.</strong> Restocking, the operations team's top ask.</li>
+      <li><strong>Test throughout, not at the end.</strong> Every phase ships with coverage for what it touched.</li>
+    </ul>
+    <div class="num">5 / 12</div>
+  </div>
+
+  <!-- 6: R4 -->
+  <div class="slide">
+    <div class="kicker">R4 — Architecture Review</div>
+    <h2>Understand it, document it, harden it</h2>
+    <ul>
+      <li>Audit the stack, data flow, and full API surface.</li>
+      <li>Deliver current-state documentation suitable for IT handoff.</li>
+      <li>Flag configuration items worth addressing (e.g. access controls, data storage) as we go.</li>
+    </ul>
+    <div class="num">6 / 12</div>
+  </div>
+
+  <!-- 7: R1 -->
+  <div class="slide">
+    <div class="kicker">R1 — Reports Remediation</div>
+    <h2>Bring Reports in line with the rest of the app</h2>
+    <ul>
+      <li>Migrate to the same patterns already used by every other view.</li>
+      <li>Add translation support, matching the system already in place elsewhere.</li>
+      <li>Remove leftover debug output; resolve filter and formatting inconsistencies.</li>
+      <li>Treat Meridian's 8 logged issues as a floor — full audit included.</li>
+    </ul>
+    <div class="num">7 / 12</div>
+  </div>
+
+  <!-- 8: R2 -->
+  <div class="slide">
+    <div class="kicker">R2 — Restocking Recommendations</div>
+    <h2>From data to a purchasing decision</h2>
+    <p class="sub" style="margin-bottom: 24px;">Stock levels + demand forecast + budget ceiling → recommended purchase orders.</p>
+    <ul>
+      <li>New view built on data the system already has.</li>
+      <li>Completes purchase-order functionality the previous vendor started but didn't finish.</li>
+      <li>The centerpiece of this engagement for the operations team.</li>
+    </ul>
+    <div class="num">8 / 12</div>
+  </div>
+
+  <!-- 9: R3 -->
+  <div class="slide">
+    <div class="kicker">R3 — Automated Testing</div>
+    <h2>A safety net that grows with every phase</h2>
+    <ul>
+      <li>No coverage exists today — this unblocks IT's ability to approve future changes.</li>
+      <li>Tests ship alongside each phase's work, not as a separate deliverable at the end.</li>
+      <li>Flows prioritized by risk, informed by the architecture review.</li>
+    </ul>
+    <div class="num">9 / 12</div>
+  </div>
+
+  <!-- 10: Timeline -->
+  <div class="slide">
+    <div class="kicker">Timeline</div>
+    <h2>12 weeks, ahead of Q4 restocking season</h2>
+    <div class="timeline-row"><div class="dot"></div><div class="weeks">Wk 1–2</div><div class="label">Architecture review</div></div>
+    <div class="timeline-row"><div class="dot"></div><div class="weeks">Wk 3–4</div><div class="label">Reports remediation</div></div>
+    <div class="timeline-row"><div class="dot"></div><div class="weeks">Wk 5–9</div><div class="label">Restocking build</div></div>
+    <div class="timeline-row"><div class="dot"></div><div class="weeks">Wk 10</div><div class="label">Test coverage close-out</div></div>
+    <div class="timeline-row"><div class="dot" style="background: var(--muted);"></div><div class="weeks">Wk 11–12</div><div class="label">Desired items, time-permitting</div></div>
+    <div class="num">10 / 12</div>
+  </div>
+
+  <!-- 11: Pricing -->
+  <div class="slide">
+    <div class="kicker">Investment</div>
+    <h2>Fixed fee for required scope</h2>
+    <div class="pricebox"><span>Required scope (R1–R4) — fixed fee</span><span class="amt">$80,000</span></div>
+    <div class="pricebox"><span>Desired scope (D1–D3) — T&amp;M, not-to-exceed</span><span class="amt">up to $26,000</span></div>
+    <div class="pricebox"><span><strong>Combined ceiling</strong></span><span class="amt">$106,000</span></div>
+    <p class="footer-note">Required scope does not depend on desired scope being funded.</p>
+    <div class="num">11 / 12</div>
+  </div>
+
+  <!-- 12: Why us / closing -->
+  <div class="slide closing">
+    <div class="kicker">Why Us</div>
+    <h1>We've seen this exact pattern before</h1>
+    <p class="sub">Inherited system, incomplete build, one feature the operations team is waiting on. We stabilize first, then build, with testing carried throughout, not bolted on at the end.</p>
+    <div class="num">12 / 12</div>
+  </div>
+
+</div>
+</body>
+</html>
